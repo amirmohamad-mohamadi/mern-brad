@@ -57,6 +57,15 @@ const loginUser = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const getMe = expressAsyncHandler(async (req, res) => {
+  const user = {
+    email: req.user.email,
+    id: req.user._id,
+    name: req.user.name,
+  };
+  res.status(200).json(user);
+});
+
 // Generate token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -67,4 +76,5 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
+  getMe,
 };
