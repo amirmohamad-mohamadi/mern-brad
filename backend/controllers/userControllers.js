@@ -1,7 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModels");
-const { default: mongoose } = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 const registerUser = expressAsyncHandler(async (req, res) => {
   const { name, password, email } = req.body;
@@ -33,6 +33,7 @@ const registerUser = expressAsyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
@@ -41,10 +42,39 @@ const registerUser = expressAsyncHandler(async (req, res) => {
 });
 
 const loginUser = expressAsyncHandler(async (req, res) => {
-  res.send("Login User");
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
 });
+
+const getMe = expressAsyncHandler(async (req, res) => {
+  const user = {
+    email: req.user.email,
+    id: req.user._id,
+    name: req.user.name,
+  };
+  res.status(200).json(user);
+});
+
+// Generate token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
 
 module.exports = {
   registerUser,
   loginUser,
+  getMe,
 };
