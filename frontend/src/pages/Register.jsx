@@ -52,7 +52,7 @@ const Register = () => {
     <>
       <section className="heading">
         <h1>
-          <FaUser /> Register {user.name}
+          <FaUser /> Register {user?.name}
         </h1>
         <p>Please create an account</p>
       </section>
