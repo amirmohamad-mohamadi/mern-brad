@@ -4,22 +4,23 @@ const API_URL = "/api/tickets/";
 
 const createTicket = async (ticketData, token) => {
   const config = {
-    header: { Authorization: `Bearer ${token}` },
+    headers: { authorization: `Bearer ${token}` },
   };
-
-  const response = await axios.post(API_URL, ticketData, config);
-  return response.data;
+  if (ticketData && token) {
+    const response = await axios.post(API_URL, ticketData, config);
+    return response.data;
+  }
 };
 
 const getTickets = async (token) => {
   const config = {
-    header: { Authorization: `Bearer ${token}` },
+    headers: { authorization: `Bearer ${token}` },
   };
-
-  const response = await axios.post(API_URL, config);
-  return response.data;
+  if (token) {
+    const response = await axios.get(API_URL, config);
+    return response.data;
+  }
 };
-
 const ticketService = {
   createTicket,
   getTickets,

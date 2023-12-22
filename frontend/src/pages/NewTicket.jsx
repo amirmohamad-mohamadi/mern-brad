@@ -13,7 +13,7 @@ const NewTicket = () => {
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.tickets
   );
-  const [product, setProduct] = useState();
+  const [product, setProduct] = useState("iPhone");
   const [description, setDescription] = useState();
 
   useEffect(() => {
@@ -21,15 +21,14 @@ const NewTicket = () => {
       toast.error(message);
     }
     if (isSuccess) {
-      dispatch(reset);
+      dispatch(reset());
       navigate("/tickets");
     }
-    dispatch(reset);
+    dispatch(reset());
   }, [dispatch, isError, isSuccess, message, navigate]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("1111111");
     dispatch(createTicket({ product, description }));
   };
 
@@ -42,7 +41,7 @@ const NewTicket = () => {
       <BackButton url={"/"} />
       <section className="heading">
         <h1>Create New Ticket</h1>
-        <p1>Please fill out the form below</p1>
+        <p>Please fill out the form below</p>
       </section>
 
       <section className="form">
